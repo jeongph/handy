@@ -2,6 +2,7 @@
 
 ``` sh
 git init
+git add --all
 git commit -m "init: initialize"
 git remote add origin https://github.com/jeongph/{REPOSITORY_NAME}.git
 git branch -M main
