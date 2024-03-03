@@ -2,7 +2,7 @@
 
 ```sh
 wget -O - <external_link> | bash
-# e.g. wget -O - https://raw.githubusercontent.com/jeongph/handy/main/shell/hello.sh
+# e.g. wget -O - https://raw.githubusercontent.com/jeongph/handy/main/shell/hello.sh | bash
 ```
 
 ### 외부 스크립트 파일 저장
