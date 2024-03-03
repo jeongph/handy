@@ -9,5 +9,5 @@ wget -O - <external_link> | bash
 
 ```sh
 wget -O <file_name> <external_link> | bash
-# e.g. wget -O hello.sh https://raw.githubusercontent.com/jeongph/handy/main/shell/hello.sh
+# e.g. wget -O hello.sh https://raw.githubusercontent.com/jeongph/handy/main/shell/hello.sh | bash
 ```
