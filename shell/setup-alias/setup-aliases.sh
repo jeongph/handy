@@ -13,6 +13,9 @@ NC='\033[0m' # No Color
 
 # 추가할 alias 목록 (name|value 형식)
 ALIASES=(
+    # Claude code
+    "c|claude"
+    "c-sudo|claude --dangerously-skip-permissions"
     # Tmux
     "t|tmux"
     "tnew|tmux new -s"
