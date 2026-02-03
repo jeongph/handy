@@ -24,7 +24,7 @@ ALIASES=(
     "ta|tmux a"
     "tat|tmux a -t"
     "tkt|tmux kill-session -t"
-    "kt|tmux kill-session"
+    "tk|tmux kill-session"
     # Kubernetes
     "k|kubectl"
     "ktl|kubectl"
