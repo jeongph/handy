@@ -13,7 +13,7 @@ NC='\033[0m' # No Color
 
 # 추가할 alias 목록 (name|value 형식)
 ALIASES=(
-    "alias-update|wget -O - https://raw.githubusercontent.com/jeongph/handy/refs/heads/main/shell/setup-alias/setup-aliases.sh | bash"
+    "alias-fetch|wget -O - https://raw.githubusercontent.com/jeongph/handy/refs/heads/main/shell/setup-alias/setup-aliases.sh | bash"
     # Claude code
     "c|claude"
     "c-sudo|claude --dangerously-skip-permissions"
