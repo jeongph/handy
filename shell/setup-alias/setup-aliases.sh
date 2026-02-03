@@ -27,8 +27,8 @@ ALIASES=(
     "k|kubectl"
     "ktl|kubectl"
     # Directory
-    "ll|ls -la"
-    "la|ls -A"
+    "ll|ls -l"
+    "la|ls -al"
     "..|cd .."
     "...|cd ../.."
 )
