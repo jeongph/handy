@@ -1,0 +1,6 @@
+# configs/ssh/config.common
+
+Host pn41
+  HostName 192.168.0.22
+  User jeonguk
+  Port 22

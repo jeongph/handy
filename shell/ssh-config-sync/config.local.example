@@ -1,0 +1,4 @@
+# Personal overrides / extra hosts
+
+#Host pn41
+#  IdentityFile ~/.ssh/id_ed25519
