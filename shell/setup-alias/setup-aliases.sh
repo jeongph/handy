@@ -59,13 +59,15 @@ select_rc_file() {
     echo "2) ~/.bashrc" > /dev/tty
     echo "3) ~/.bash_profile" > /dev/tty
     echo "4) 직접 입력" > /dev/tty
-    read -p "선택 (1-4): " choice < /dev/tty
+    printf "선택 (1-4): " > /dev/tty
+    read choice < /dev/tty
     case "$choice" in
         1) echo "$HOME/.zshrc" ;;
         2) echo "$HOME/.bashrc" ;;
         3) echo "$HOME/.bash_profile" ;;
         4)
-            read -p "RC 파일 경로 입력: " custom_path < /dev/tty
+            printf "RC 파일 경로 입력: " > /dev/tty
+            read custom_path < /dev/tty
             echo "${custom_path/#\~/$HOME}"
             ;;
         *)
@@ -409,7 +411,8 @@ main() {
         echo ""
         echo "================================"
         echo ""
-        read -p "제거하시겠습니까? (y/N): " confirm < /dev/tty
+        printf "제거하시겠습니까? (y/N): " > /dev/tty
+        read confirm < /dev/tty
 
         if [[ "$confirm" != "y" && "$confirm" != "Y" ]]; then
             echo -e "${YELLOW}취소되었습니다.${NC}"
