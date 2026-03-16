@@ -16,6 +16,7 @@ ALIASES=(
     "alias-fetch|wget -O - https://raw.githubusercontent.com/jeongph/handy/refs/heads/main/shell/setup-alias/setup-aliases.sh | bash"
     # Claude code
     "c|claude"
+    "cc|claude --dangerously-skip-permissions --effort max"
     "c-sudo|claude --dangerously-skip-permissions"
     # Tmux
     "t|tmux"
