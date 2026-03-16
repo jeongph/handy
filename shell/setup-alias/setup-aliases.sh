@@ -12,9 +12,12 @@ BOLD='\033[1m'
 DIM='\033[2m'
 NC='\033[0m'
 
+# 항상 포함되는 alias (체크박스 선택 불가)
+ALWAYS_ALIAS_NAME="alias-fetch"
+ALWAYS_ALIAS_VALUE="source <(curl -fsSL https://jeongph.dev/handy/setup-aliases.sh)"
+
 # 카테고리|이름|값 형식의 alias 목록
 ALIAS_ENTRIES=(
-    "General|alias-fetch|source <(curl -fsSL https://jeongph.dev/handy/setup-aliases.sh)"
     "Claude Code|c|claude"
     "Claude Code|cx|claude --dangerously-skip-permissions --effort max"
     "Claude Code|c-sudo|claude --dangerously-skip-permissions"
@@ -114,7 +117,7 @@ read_key() {
 
 # 메뉴 라인 수 계산
 count_menu_lines() {
-    local lines=0
+    local lines=3  # 고정 alias: 헤더(1) + 항목(1) + 빈 줄(1)
     local prev_cat=""
     for entry in "${ALIAS_ENTRIES[@]}"; do
         local cat="${entry%%|*}"
@@ -131,9 +134,13 @@ count_menu_lines() {
 
 # 메뉴 그리기
 draw_menu() {
-    local prev_cat=""
+    local prev_cat="_required_"
     local idx=0
     local sel_count=0
+
+    # 고정 alias 표시
+    printf "  \033[1;36m── 필수 ──\033[0m\033[K\n" > /dev/tty
+    printf "  [\033[0;32m✓\033[0m] \033[2m%-10s → %s\033[0m\033[K\n" "$ALWAYS_ALIAS_NAME" "$ALWAYS_ALIAS_VALUE" > /dev/tty
 
     for entry in "${ALIAS_ENTRIES[@]}"; do
         local cat="${entry%%|*}"
@@ -143,7 +150,7 @@ draw_menu() {
 
         # 카테고리 헤더
         if [[ "$cat" != "$prev_cat" ]]; then
-            [[ -n "$prev_cat" ]] && printf '\033[K\n' > /dev/tty
+            printf '\033[K\n' > /dev/tty
             printf "  \033[1;36m── %s ──\033[0m\033[K\n" "$cat" > /dev/tty
             prev_cat="$cat"
         fi
@@ -302,20 +309,26 @@ main() {
         [[ "${selected[$i]}" == "1" ]] && sel_count=$((sel_count + 1))
     done
 
-    if [ "$sel_count" -eq 0 ]; then
-        echo -e "${YELLOW}선택된 alias가 없습니다.${NC}"
-        return 0
-    fi
-
     echo ""
     echo "대상 RC 파일: $rc_file"
     echo "================================"
     echo ""
 
-    # 선택된 alias 추가
+    # alias 추가
     local added=0
     local skipped=0
 
+    # 고정 alias (항상 포함)
+    if alias_exists "$rc_file" "$ALWAYS_ALIAS_NAME"; then
+        echo -e "${YELLOW}[SKIP]${NC} alias '$ALWAYS_ALIAS_NAME' 이미 존재"
+        skipped=$((skipped + 1))
+    else
+        echo "alias ${ALWAYS_ALIAS_NAME}='${ALWAYS_ALIAS_VALUE}'" >> "$rc_file"
+        echo -e "${GREEN}[ADD]${NC} alias ${ALWAYS_ALIAS_NAME}='${ALWAYS_ALIAS_VALUE}'"
+        added=$((added + 1))
+    fi
+
+    # 선택된 alias
     for ((i=0; i<${#ALIAS_ENTRIES[@]}; i++)); do
         [[ "${selected[$i]}" != "1" ]] && continue
 
