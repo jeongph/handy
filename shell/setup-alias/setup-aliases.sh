@@ -3,8 +3,6 @@
 # setup-aliases.sh
 # 자주 사용하는 alias들을 쉘 RC 파일에 중복 없이 추가하는 스크립트
 
-set -e
-
 # 색상 정의
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -13,7 +11,7 @@ NC='\033[0m' # No Color
 
 # 추가할 alias 목록 (name|value 형식)
 ALIASES=(
-    "alias-fetch|wget -O - https://raw.githubusercontent.com/jeongph/handy/refs/heads/main/shell/setup-alias/setup-aliases.sh | bash"
+    "alias-fetch|source <(curl -fsSL https://jeongph.dev/handy/setup-aliases.sh)"
     # Claude code
     "c|claude"
     "cx|claude --dangerously-skip-permissions --effort max"
@@ -81,7 +79,7 @@ select_rc_file() {
             ;;
         *)
             echo -e "${RED}잘못된 선택입니다.${NC}" >&2
-            exit 1
+            return 1
             ;;
     esac
 }
@@ -127,11 +125,11 @@ main() {
                 echo "옵션:"
                 echo "  -i, --interactive  대화형 모드로 RC 파일 선택"
                 echo "  -h, --help         도움말 출력"
-                exit 0
+                return 0
                 ;;
             *)
                 echo -e "${RED}알 수 없는 옵션: $1${NC}" >&2
-                exit 1
+                return 1
                 ;;
         esac
     done
@@ -180,9 +178,19 @@ main() {
     echo ""
     echo "================================"
     echo -e "완료: ${GREEN}${added}개 추가${NC}, ${YELLOW}${skipped}개 스킵${NC}"
-    echo ""
-    echo "적용하려면 다음 명령을 실행하세요:"
-    echo -e "  ${GREEN}source $rc_file${NC}"
+
+    if [ "$added" -gt 0 ]; then
+        echo ""
+        # source로 실행된 경우: 현재 셸에 바로 적용
+        # bash로 실행된 경우: 자식 셸이라 적용 불가 → 안내 출력
+        if [[ "${BASH_SOURCE[0]}" != "${0}" ]] 2>/dev/null || [ -n "$ZSH_EVAL_CONTEXT" ]; then
+            source "$rc_file"
+            echo -e "${GREEN}alias가 현재 셸에 적용되었습니다.${NC}"
+        else
+            echo -e "${YELLOW}현재 셸에 바로 적용하려면:${NC}"
+            echo -e "  ${GREEN}source $rc_file${NC}"
+        fi
+    fi
 }
 
 main "$@"
