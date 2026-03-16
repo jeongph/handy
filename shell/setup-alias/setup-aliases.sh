@@ -186,7 +186,7 @@ draw_menu() {
     local total_count=${#ALIAS_ENTRIES[@]}
 
     # 고정 alias
-    printf "  \033[1;36m── 필수 ──\033[0m\033[K\n" > /dev/tty
+    printf "  \033[1;36m── Required ──\033[0m\033[K\n" > /dev/tty
     if [[ "$always_status" == "changed" ]]; then
         printf "  [\033[0;32m✓\033[0m] %-10s \033[0;31m%s\033[0m \033[2m=>\033[0m \033[0;32m%s\033[0m\033[K\n" \
             "$ALWAYS_ALIAS_NAME" "$always_current" "$ALWAYS_ALIAS_VALUE" > /dev/tty
@@ -265,6 +265,12 @@ select_aliases() {
     printf "  \033[1m적용할 alias를 선택하세요\033[0m\n" > /dev/tty
     printf "  \033[2m↑↓ 이동 │ Space 선택 │ a 전체선택 │ n 전체해제 │ Enter 확인 │ q 취소\033[0m\n" > /dev/tty
     printf '\n' > /dev/tty
+
+    # 메뉴 영역만큼 빈 줄로 공간 확보 (스크롤 발생 시 미리 처리)
+    for ((j=0; j<total_lines; j++)); do
+        printf '\n' > /dev/tty
+    done
+    printf '\033[%dA' "$total_lines" > /dev/tty
 
     draw_menu
 
