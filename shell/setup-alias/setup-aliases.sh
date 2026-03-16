@@ -163,20 +163,14 @@ read_key() {
 
 # ── 메뉴 UI ──
 
-count_menu_lines() {
-    local lines=2  # 고정 alias: 헤더(1) + 항목(1)
-    local prev_cat=""
-    for entry in "${ALIAS_ENTRIES[@]}"; do
-        local cat="${entry%%|*}"
-        if [[ "$cat" != "$prev_cat" ]]; then
-            [[ $lines -gt 0 ]] && lines=$((lines + 1))
-            lines=$((lines + 1))
-            prev_cat="$cat"
-        fi
-        lines=$((lines + 1))
-    done
-    lines=$((lines + 2))
-    echo "$lines"
+# 헤더 + 메뉴 전체 그리기 (alternate screen용)
+draw_screen() {
+    printf '\033[H\033[J' > /dev/tty
+    printf '\n' > /dev/tty
+    printf "  \033[1m적용할 alias를 선택하세요\033[0m\n" > /dev/tty
+    printf "  \033[2m↑↓ 이동 │ Space 선택 │ a 전체선택 │ n 전체해제 │ Enter 확인 │ q 취소\033[0m\n" > /dev/tty
+    printf '\n' > /dev/tty
+    draw_menu
 }
 
 draw_menu() {
@@ -250,29 +244,17 @@ draw_menu() {
 
 select_aliases() {
     local count=${#ALIAS_ENTRIES[@]}
-    local total_lines
-    total_lines=$(count_menu_lines)
     cursor=0
 
     for ((i=0; i<count; i++)); do
         selected[$i]=1
     done
 
-    printf '\033[?25l' > /dev/tty
-    trap 'printf "\033[?25h\n" > /dev/tty; return 1' INT
+    # 대체 화면 진입 + 커서 숨기기
+    printf '\033[?1049h\033[?25l' > /dev/tty
+    trap 'printf "\033[?25h\033[?1049l" > /dev/tty; return 1' INT
 
-    printf '\n' > /dev/tty
-    printf "  \033[1m적용할 alias를 선택하세요\033[0m\n" > /dev/tty
-    printf "  \033[2m↑↓ 이동 │ Space 선택 │ a 전체선택 │ n 전체해제 │ Enter 확인 │ q 취소\033[0m\n" > /dev/tty
-    printf '\n' > /dev/tty
-
-    # 메뉴 영역만큼 빈 줄로 공간 확보 (스크롤 발생 시 미리 처리)
-    for ((j=0; j<total_lines; j++)); do
-        printf '\n' > /dev/tty
-    done
-    printf '\033[%dA' "$total_lines" > /dev/tty
-
-    draw_menu
+    draw_screen
 
     while true; do
         local key
@@ -286,19 +268,16 @@ select_aliases() {
             NONE)  for ((i=0; i<count; i++)); do selected[$i]=0; done ;;
             ENTER) break ;;
             QUIT)
-                printf '\033[?25h' > /dev/tty
-                printf '\n\n' > /dev/tty
+                printf '\033[?25h\033[?1049l' > /dev/tty
                 echo -e "${YELLOW}취소되었습니다.${NC}" > /dev/tty
                 return 1
                 ;;
         esac
 
-        printf '\033[%dA\r' "$((total_lines - 1))" > /dev/tty
-        draw_menu
+        draw_screen
     done
 
-    printf '\033[?25h' > /dev/tty
-    printf '\n\n' > /dev/tty
+    printf '\033[?25h\033[?1049l' > /dev/tty
     return 0
 }
 
