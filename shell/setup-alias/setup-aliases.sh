@@ -201,7 +201,7 @@ draw_menu() {
         local rest="${entry#*|}"
         local name="${rest%%|*}"
         local value="${rest#*|}"
-        local status="${alias_status[$idx]}"
+        local astate="${alias_status[$idx]}"
         local is_cursor=false
         [[ $idx -eq $cursor ]] && is_cursor=true
 
@@ -218,13 +218,13 @@ draw_menu() {
             sel_count=$((sel_count + 1))
         fi
 
-        if [[ "$status" == "installed" ]]; then
+        if [[ "$astate" == "installed" ]]; then
             if [ "$is_cursor" = true ]; then
                 printf "\033[1m▸ \033[0m\033[2m[${check}\033[2m] %-10s → %s\033[0m\033[K\n" "$name" "$value" > /dev/tty
             else
                 printf "  \033[2m[${check}\033[2m] %-10s → %s\033[0m\033[K\n" "$name" "$value" > /dev/tty
             fi
-        elif [[ "$status" == "changed" ]]; then
+        elif [[ "$astate" == "changed" ]]; then
             local current="${alias_current[$idx]}"
             if [ "$is_cursor" = true ]; then
                 printf "\033[1m▸ \033[0m[${check}] \033[1m%-10s\033[0m \033[0;31m%s\033[0m \033[2m=>\033[0m \033[0;32m%s\033[0m\033[K\n" \
@@ -490,20 +490,20 @@ main() {
         local rest="${entry#*|}"
         local alias_name="${rest%%|*}"
         local alias_value="${rest#*|}"
-        local status="${alias_status[$i]}"
+        local astate="${alias_status[$i]}"
 
         if [[ "${selected[$i]}" == "1" ]]; then
-            if [[ "$status" == "installed" ]]; then
+            if [[ "$astate" == "installed" ]]; then
                 echo -e "${DIM}[=]${NC} alias '$alias_name' 변경 없음"
                 unchanged=$((unchanged + 1))
-            elif [[ "$status" == "changed" ]]; then
+            elif [[ "$astate" == "changed" ]]; then
                 echo -e "${CYAN}[UPDATE]${NC} alias ${alias_name}='${alias_value}'"
                 updated=$((updated + 1))
             else
                 echo -e "${GREEN}[ADD]${NC} alias ${alias_name}='${alias_value}'"
                 added=$((added + 1))
             fi
-        elif [[ "$status" == "installed" || "$status" == "changed" ]]; then
+        elif [[ "$astate" == "installed" || "$astate" == "changed" ]]; then
             echo -e "${RED}[REMOVE]${NC} alias '${alias_name}'"
             removed=$((removed + 1))
         fi
