@@ -5,8 +5,10 @@
 ## 실행
 
 ```bash
-wget -O - https://raw.githubusercontent.com/jeongph/handy/refs/heads/main/shell/setup-alias/setup-aliases.sh | bash
+source <(curl -fsSL https://jeongph.dev/handy/setup-aliases.sh)
 ```
+
+이후 업데이트는 `alias-fetch`로 실행
 
 ## 옵션
 
@@ -21,6 +23,13 @@ wget -O - https://raw.githubusercontent.com/jeongph/handy/refs/heads/main/shell/
 
 ## 포함된 Alias
 
+### Claude Code
+| Alias | 명령어 |
+|-------|--------|
+| `c` | `claude` |
+| `cx` | `claude --dangerously-skip-permissions --effort max` |
+| `c-sudo` | `claude --dangerously-skip-permissions` |
+
 ### Tmux
 | Alias | 명령어 |
 |-------|--------|
@@ -29,6 +38,8 @@ wget -O - https://raw.githubusercontent.com/jeongph/handy/refs/heads/main/shell/
 | `tls` | `tmux ls` |
 | `ta` | `tmux a` |
 | `tat` | `tmux a -t` |
+| `tkt` | `tmux kill-session -t` |
+| `tk` | `tmux kill-session` |
 
 ### Kubernetes
 | Alias | 명령어 |
@@ -39,8 +50,8 @@ wget -O - https://raw.githubusercontent.com/jeongph/handy/refs/heads/main/shell/
 ### Directory
 | Alias | 명령어 |
 |-------|--------|
-| `ll` | `ls -la` |
-| `la` | `ls -A` |
+| `ll` | `ls -lF` |
+| `la` | `ls -alF` |
 | `..` | `cd ..` |
 | `...` | `cd ../..` |
 
@@ -49,3 +60,4 @@ wget -O - https://raw.githubusercontent.com/jeongph/handy/refs/heads/main/shell/
 - 쉘 자동 감지 (`$SHELL` 기반)
 - 중복 추가 방지
 - 대화형 모드 지원
+- source 방식 실행 시 alias 자동 적용
