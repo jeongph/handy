@@ -194,7 +194,6 @@ select_aliases() {
 
     # 초기 그리기
     draw_menu
-    printf '\n' > /dev/tty
 
     while true; do
         local key
@@ -209,20 +208,19 @@ select_aliases() {
             ENTER) break ;;
             QUIT)
                 printf '\033[?25h' > /dev/tty
-                printf '\n' > /dev/tty
+                printf '\n\n' > /dev/tty
                 echo -e "${YELLOW}취소되었습니다.${NC}" > /dev/tty
                 return 1
                 ;;
         esac
 
-        # 메뉴 위치로 이동 후 재그리기
-        printf '\033[%dA\r' "$total_lines" > /dev/tty
+        # 메뉴 첫 줄로 이동 후 재그리기
+        printf '\033[%dA\r' "$((total_lines - 1))" > /dev/tty
         draw_menu
-        printf '\n' > /dev/tty
     done
 
     printf '\033[?25h' > /dev/tty
-    printf '\n' > /dev/tty
+    printf '\n\n' > /dev/tty
     return 0
 }
 
