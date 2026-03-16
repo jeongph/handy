@@ -228,8 +228,12 @@ select_aliases() {
 
 # 메인 로직
 main() {
+    # zsh 호환성: 0-based 배열 인덱싱 (함수 종료 시 자동 복원)
+    [ -n "$ZSH_VERSION" ] && setopt LOCAL_OPTIONS KSH_ARRAYS
+
     local interactive=false
     local select_all=false
+    typeset -a selected
 
     # 인자 파싱
     while [[ $# -gt 0 ]]; do
@@ -314,7 +318,7 @@ main() {
     local added=0
     local skipped=0
 
-    for i in "${!ALIAS_ENTRIES[@]}"; do
+    for ((i=0; i<${#ALIAS_ENTRIES[@]}; i++)); do
         [[ "${selected[$i]}" != "1" ]] && continue
 
         local entry="${ALIAS_ENTRIES[$i]}"
