@@ -115,7 +115,7 @@ block_alias_value() {
     local alias_name="$1"
     [ -z "$block_cache" ] && return
     local line
-    line=$(echo "$block_cache" | grep "^alias ${alias_name}=" | head -1)
+    line=$(echo "$block_cache" | grep -F "alias ${alias_name}=" | head -1)
     [ -z "$line" ] && return
     local value="${line#alias ${alias_name}=}"
     if [[ "$value" == \'*\' ]]; then
