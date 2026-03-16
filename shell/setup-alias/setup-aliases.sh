@@ -40,7 +40,6 @@ ALIAS_ENTRIES=(
 detect_rc_file() {
     local shell_name
     shell_name=$(basename "$SHELL")
-
     case "$shell_name" in
         zsh)  echo "$HOME/.zshrc" ;;
         bash) echo "$HOME/.bashrc" ;;
@@ -55,9 +54,7 @@ select_rc_file() {
     echo "2) ~/.bashrc" > /dev/tty
     echo "3) ~/.bash_profile" > /dev/tty
     echo "4) 직접 입력" > /dev/tty
-
     read -p "선택 (1-4): " choice < /dev/tty
-
     case "$choice" in
         1) echo "$HOME/.zshrc" ;;
         2) echo "$HOME/.bashrc" ;;
@@ -80,6 +77,24 @@ alias_exists() {
     grep -q "^alias ${alias_name}=" "$rc_file" 2>/dev/null
 }
 
+# RC 파일에서 alias 현재 값 추출
+get_alias_value() {
+    local rc_file="$1"
+    local alias_name="$2"
+    local line
+    line=$(grep "^alias ${alias_name}=" "$rc_file" 2>/dev/null | head -1)
+    [ -z "$line" ] && return
+    local value="${line#alias ${alias_name}=}"
+    if [[ "$value" == \'*\' ]]; then
+        value="${value#\'}"
+        value="${value%\'}"
+    elif [[ "$value" == \"*\" ]]; then
+        value="${value#\"}"
+        value="${value%\"}"
+    fi
+    echo "$value"
+}
+
 # 키 입력 읽기 (bash/zsh 호환)
 read_key() {
     local key
@@ -88,7 +103,6 @@ read_key() {
     else
         IFS= read -rsn1 key < /dev/tty
     fi
-
     if [[ "$key" == $'\x1b' ]]; then
         if [ -n "$ZSH_VERSION" ]; then
             read -rsk2 -t 0.1 key < /dev/tty 2>/dev/null || key=""
@@ -137,16 +151,25 @@ draw_menu() {
     local prev_cat="_required_"
     local idx=0
     local sel_count=0
+    local selectable_count=0
 
     # 고정 alias 표시
     printf "  \033[1;36m── 필수 ──\033[0m\033[K\n" > /dev/tty
-    printf "  [\033[0;32m✓\033[0m] \033[2m%-10s → %s\033[0m\033[K\n" "$ALWAYS_ALIAS_NAME" "$ALWAYS_ALIAS_VALUE" > /dev/tty
+    if [[ "$always_status" == "changed" ]]; then
+        printf "  [\033[0;32m✓\033[0m] %-10s \033[0;31m%s\033[0m \033[2m=>\033[0m \033[0;32m%s\033[0m\033[K\n" \
+            "$ALWAYS_ALIAS_NAME" "$always_current" "$ALWAYS_ALIAS_VALUE" > /dev/tty
+    elif [[ "$always_status" == "same" ]]; then
+        printf "  \033[2m[=] %-10s → %s\033[0m\033[K\n" "$ALWAYS_ALIAS_NAME" "$ALWAYS_ALIAS_VALUE" > /dev/tty
+    else
+        printf "  [\033[0;32m✓\033[0m] %-10s \033[2m→\033[0m %s\033[K\n" "$ALWAYS_ALIAS_NAME" "$ALWAYS_ALIAS_VALUE" > /dev/tty
+    fi
 
     for entry in "${ALIAS_ENTRIES[@]}"; do
         local cat="${entry%%|*}"
         local rest="${entry#*|}"
         local name="${rest%%|*}"
         local value="${rest#*|}"
+        local status="${alias_status[$idx]}"
 
         # 카테고리 헤더
         if [[ "$cat" != "$prev_cat" ]]; then
@@ -155,18 +178,45 @@ draw_menu() {
             prev_cat="$cat"
         fi
 
-        # 선택 표시
-        local check=" "
-        if [[ "${selected[$idx]}" == "1" ]]; then
-            check="\033[0;32m✓\033[0m"
-            sel_count=$((sel_count + 1))
-        fi
+        local is_cursor=false
+        [[ $idx -eq $cursor ]] && is_cursor=true
 
-        # 커서 위치에 따라 하이라이트
-        if [[ $idx -eq $cursor ]]; then
-            printf "\033[1m▸ \033[0m[${check}] \033[1m%-10s\033[0m \033[2m→\033[0m %s\033[K\n" "$name" "$value" > /dev/tty
+        if [[ "$status" == "same" ]]; then
+            # 동일 값 설치됨 - 흐리게, 선택 불가
+            if [ "$is_cursor" = true ]; then
+                printf "\033[2m▸ [=] %-10s → %s\033[0m\033[K\n" "$name" "$value" > /dev/tty
+            else
+                printf "  \033[2m[=] %-10s → %s\033[0m\033[K\n" "$name" "$value" > /dev/tty
+            fi
+        elif [[ "$status" == "changed" ]]; then
+            # 값 변경됨 - diff 표시
+            local current="${alias_current[$idx]}"
+            local check=" "
+            if [[ "${selected[$idx]}" == "1" ]]; then
+                check="\033[0;32m✓\033[0m"
+                sel_count=$((sel_count + 1))
+            fi
+            selectable_count=$((selectable_count + 1))
+            if [ "$is_cursor" = true ]; then
+                printf "\033[1m▸ \033[0m[${check}] \033[1m%-10s\033[0m \033[0;31m%s\033[0m \033[2m=>\033[0m \033[0;32m%s\033[0m\033[K\n" \
+                    "$name" "$current" "$value" > /dev/tty
+            else
+                printf "  [${check}] %-10s \033[0;31m%s\033[0m \033[2m=>\033[0m \033[0;32m%s\033[0m\033[K\n" \
+                    "$name" "$current" "$value" > /dev/tty
+            fi
         else
-            printf "  [${check}] %-10s \033[2m→\033[0m %s\033[K\n" "$name" "$value" > /dev/tty
+            # 신규 alias
+            local check=" "
+            if [[ "${selected[$idx]}" == "1" ]]; then
+                check="\033[0;32m✓\033[0m"
+                sel_count=$((sel_count + 1))
+            fi
+            selectable_count=$((selectable_count + 1))
+            if [ "$is_cursor" = true ]; then
+                printf "\033[1m▸ \033[0m[${check}] \033[1m%-10s\033[0m \033[2m→\033[0m %s\033[K\n" "$name" "$value" > /dev/tty
+            else
+                printf "  [${check}] %-10s \033[2m→\033[0m %s\033[K\n" "$name" "$value" > /dev/tty
+            fi
         fi
 
         idx=$((idx + 1))
@@ -174,7 +224,7 @@ draw_menu() {
 
     # 선택 현황
     printf '\033[K\n' > /dev/tty
-    printf "  \033[2m%d/%d 선택됨\033[0m\033[K" "$sel_count" "${#ALIAS_ENTRIES[@]}" > /dev/tty
+    printf "  \033[2m%d/%d 선택됨\033[0m\033[K" "$sel_count" "$selectable_count" > /dev/tty
 }
 
 # 체크박스 선택 UI
@@ -184,9 +234,13 @@ select_aliases() {
     total_lines=$(count_menu_lines)
     cursor=0
 
-    # 전체 선택으로 초기화
+    # 상태에 따라 초기 선택값 설정
     for ((i=0; i<count; i++)); do
-        selected[$i]=1
+        if [[ "${alias_status[$i]}" == "same" ]]; then
+            selected[$i]=0
+        else
+            selected[$i]=1
+        fi
     done
 
     # 커서 숨기기 & Ctrl+C 시 복원
@@ -209,9 +263,20 @@ select_aliases() {
         case "$key" in
             UP)    [[ $cursor -gt 0 ]] && cursor=$((cursor - 1)) ;;
             DOWN)  [[ $cursor -lt $((count - 1)) ]] && cursor=$((cursor + 1)) ;;
-            SPACE) selected[$cursor]=$(( 1 - ${selected[$cursor]} )) ;;
-            ALL)   for ((i=0; i<count; i++)); do selected[$i]=1; done ;;
-            NONE)  for ((i=0; i<count; i++)); do selected[$i]=0; done ;;
+            SPACE)
+                [[ "${alias_status[$cursor]}" != "same" ]] && \
+                    selected[$cursor]=$(( 1 - ${selected[$cursor]} ))
+                ;;
+            ALL)
+                for ((i=0; i<count; i++)); do
+                    [[ "${alias_status[$i]}" != "same" ]] && selected[$i]=1
+                done
+                ;;
+            NONE)
+                for ((i=0; i<count; i++)); do
+                    [[ "${alias_status[$i]}" != "same" ]] && selected[$i]=0
+                done
+                ;;
             ENTER) break ;;
             QUIT)
                 printf '\033[?25h' > /dev/tty
@@ -231,6 +296,47 @@ select_aliases() {
     return 0
 }
 
+# RC 파일의 alias 상태 분석
+analyze_aliases() {
+    local rc_file="$1"
+
+    # 고정 alias 상태
+    if alias_exists "$rc_file" "$ALWAYS_ALIAS_NAME"; then
+        local current
+        current=$(get_alias_value "$rc_file" "$ALWAYS_ALIAS_NAME")
+        if [[ "$current" == "$ALWAYS_ALIAS_VALUE" ]]; then
+            always_status="same"
+        else
+            always_status="changed"
+            always_current="$current"
+        fi
+    else
+        always_status="new"
+        always_current=""
+    fi
+
+    # 선택 alias 상태
+    for ((i=0; i<${#ALIAS_ENTRIES[@]}; i++)); do
+        local entry="${ALIAS_ENTRIES[$i]}"
+        local rest="${entry#*|}"
+        local name="${rest%%|*}"
+        local new_value="${rest#*|}"
+
+        if alias_exists "$rc_file" "$name"; then
+            local current
+            current=$(get_alias_value "$rc_file" "$name")
+            if [[ "$current" == "$new_value" ]]; then
+                alias_status[$i]="same"
+            else
+                alias_status[$i]="changed"
+                alias_current[$i]="$current"
+            fi
+        else
+            alias_status[$i]="new"
+        fi
+    done
+}
+
 # 메인 로직
 main() {
     # zsh 호환성: 0-based 배열 인덱싱 (함수 종료 시 자동 복원)
@@ -239,6 +345,10 @@ main() {
     local interactive=false
     local select_all=false
     typeset -a selected
+    typeset -a alias_status
+    typeset -a alias_current
+    local always_status=""
+    local always_current=""
 
     # 인자 파싱
     while [[ $# -gt 0 ]]; do
@@ -256,7 +366,7 @@ main() {
                 echo ""
                 echo "옵션:"
                 echo "  -i, --interactive  대화형 모드로 RC 파일 선택"
-                echo "  -a, --all          전체 alias 추가 (선택 UI 생략)"
+                echo "  -a, --all          전체 alias 추가/업데이트 (선택 UI 생략)"
                 echo "  -h, --help         도움말 출력"
                 return 0
                 ;;
@@ -279,7 +389,6 @@ main() {
         rc_file=$(select_rc_file)
     else
         rc_file=$(detect_rc_file)
-
         if [ -z "$rc_file" ]; then
             echo -e "${YELLOW}쉘을 자동 감지할 수 없습니다. 대화형 모드로 전환합니다.${NC}"
             rc_file=$(select_rc_file)
@@ -292,10 +401,17 @@ main() {
         touch "$rc_file"
     fi
 
+    # alias 상태 분석
+    analyze_aliases "$rc_file"
+
     # alias 선택
     if [ "$select_all" = true ]; then
         for ((i=0; i<${#ALIAS_ENTRIES[@]}; i++)); do
-            selected[$i]=1
+            if [[ "${alias_status[$i]}" == "same" ]]; then
+                selected[$i]=0
+            else
+                selected[$i]=1
+            fi
         done
     else
         if ! select_aliases; then
@@ -303,25 +419,24 @@ main() {
         fi
     fi
 
-    # 선택된 항목 확인
-    local sel_count=0
-    for ((i=0; i<${#ALIAS_ENTRIES[@]}; i++)); do
-        [[ "${selected[$i]}" == "1" ]] && sel_count=$((sel_count + 1))
-    done
-
     echo ""
     echo "대상 RC 파일: $rc_file"
     echo "================================"
     echo ""
 
-    # alias 추가
+    # alias 적용
     local added=0
+    local updated=0
     local skipped=0
 
     # 고정 alias (항상 포함)
-    if alias_exists "$rc_file" "$ALWAYS_ALIAS_NAME"; then
-        echo -e "${YELLOW}[SKIP]${NC} alias '$ALWAYS_ALIAS_NAME' 이미 존재"
+    if [[ "$always_status" == "same" ]]; then
+        echo -e "${DIM}[=]${NC} alias '$ALWAYS_ALIAS_NAME' 동일"
         skipped=$((skipped + 1))
+    elif [[ "$always_status" == "changed" ]]; then
+        sed "s|^alias ${ALWAYS_ALIAS_NAME}=.*|alias ${ALWAYS_ALIAS_NAME}='${ALWAYS_ALIAS_VALUE}'|" "$rc_file" > "${rc_file}.tmp.$$" && mv "${rc_file}.tmp.$$" "$rc_file"
+        echo -e "${CYAN}[UPDATE]${NC} alias ${ALWAYS_ALIAS_NAME}='${ALWAYS_ALIAS_VALUE}'"
+        updated=$((updated + 1))
     else
         echo "alias ${ALWAYS_ALIAS_NAME}='${ALWAYS_ALIAS_VALUE}'" >> "$rc_file"
         echo -e "${GREEN}[ADD]${NC} alias ${ALWAYS_ALIAS_NAME}='${ALWAYS_ALIAS_VALUE}'"
@@ -336,10 +451,12 @@ main() {
         local rest="${entry#*|}"
         local alias_name="${rest%%|*}"
         local alias_value="${rest#*|}"
+        local status="${alias_status[$i]}"
 
-        if alias_exists "$rc_file" "$alias_name"; then
-            echo -e "${YELLOW}[SKIP]${NC} alias '$alias_name' 이미 존재"
-            skipped=$((skipped + 1))
+        if [[ "$status" == "changed" ]]; then
+            sed "s|^alias ${alias_name}=.*|alias ${alias_name}='${alias_value}'|" "$rc_file" > "${rc_file}.tmp.$$" && mv "${rc_file}.tmp.$$" "$rc_file"
+            echo -e "${CYAN}[UPDATE]${NC} alias ${alias_name}='${alias_value}'"
+            updated=$((updated + 1))
         else
             echo "alias ${alias_name}='${alias_value}'" >> "$rc_file"
             echo -e "${GREEN}[ADD]${NC} alias ${alias_name}='${alias_value}'"
@@ -349,12 +466,14 @@ main() {
 
     echo ""
     echo "================================"
-    echo -e "완료: ${GREEN}${added}개 추가${NC}, ${YELLOW}${skipped}개 스킵${NC}"
+    if [ "$updated" -gt 0 ]; then
+        echo -e "완료: ${GREEN}${added}개 추가${NC}, ${CYAN}${updated}개 업데이트${NC}, ${YELLOW}${skipped}개 동일${NC}"
+    else
+        echo -e "완료: ${GREEN}${added}개 추가${NC}, ${YELLOW}${skipped}개 동일${NC}"
+    fi
 
-    if [ "$added" -gt 0 ]; then
+    if [ "$added" -gt 0 ] || [ "$updated" -gt 0 ]; then
         echo ""
-        # source로 실행된 경우: 현재 셸에 바로 적용
-        # bash로 실행된 경우: 자식 셸이라 적용 불가 → 안내 출력
         if [[ "${BASH_SOURCE[0]}" != "${0}" ]] 2>/dev/null || [ -n "$ZSH_EVAL_CONTEXT" ]; then
             source "$rc_file"
             echo -e "${GREEN}alias가 현재 셸에 적용되었습니다.${NC}"
