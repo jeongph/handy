@@ -18,7 +18,7 @@ ALIASES=(
     "c-sudo|claude --dangerously-skip-permissions"
     # Tmux
     "t|tmux"
-    "tnew|tmux new -s"
+    "tn|tmux new -s"
     "tls|tmux ls"
     "ta|tmux a"
     "tat|tmux a -t"

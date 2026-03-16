@@ -34,7 +34,7 @@ source <(curl -fsSL https://jeongph.dev/handy/setup-aliases.sh)
 | Alias | 명령어 |
 |-------|--------|
 | `t` | `tmux` |
-| `tnew` | `tmux new -s` |
+| `tn` | `tmux new -s` |
 | `tls` | `tmux ls` |
 | `ta` | `tmux a` |
 | `tat` | `tmux a -t` |
