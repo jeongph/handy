@@ -102,6 +102,21 @@ alias c='claude'
 | `k` | `kubectl` |
 | `ktl` | `kubectl` |
 
+### Docker
+| Alias | 명령어 |
+|-------|--------|
+| `d` | `docker` |
+| `dc` | `docker compose` |
+| `dps` | `docker ps` |
+
+### System
+| Alias | 명령어 |
+|-------|--------|
+| `cls` | `clear` |
+| `h` | `history` |
+| `ports` | `ss -tulanp` |
+| `myip` | `curl -s ifconfig.me` |
+
 ### Directory
 | Alias | 명령어 |
 |-------|--------|
