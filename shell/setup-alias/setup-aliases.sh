@@ -146,6 +146,7 @@ read_key() {
         case "$key" in
             '[A') echo "UP" ;;
             '[B') echo "DOWN" ;;
+            '')   echo "QUIT" ;;
             *)    echo "OTHER" ;;
         esac
     elif [[ "$key" == " " ]]; then
@@ -170,7 +171,7 @@ draw_screen() {
     printf '\033[H\033[J' > /dev/tty
     printf '\n' > /dev/tty
     printf "  \033[1m적용할 alias를 선택하세요\033[0m\n" > /dev/tty
-    printf "  \033[2m↑↓ 이동 │ Space 선택 │ a 전체선택 │ n 전체해제 │ Enter 확인 │ q 취소\033[0m\n" > /dev/tty
+    printf "  \033[2m↑↓ 이동 │ Space 선택 │ a 전체선택 │ n 전체해제 │ Enter 확인 │ ESC/q 취소\033[0m\n" > /dev/tty
     printf '\n' > /dev/tty
     draw_menu
 }
@@ -212,10 +213,19 @@ draw_menu() {
         if [[ "${selected[$idx]}" == "1" ]]; then
             check="\033[0;32m✓\033[0m"
             sel_count=$((sel_count + 1))
+        elif [[ "$astate" == "installed" || "$astate" == "changed" ]]; then
+            check="\033[0;31m✗\033[0m"
         fi
 
         if [[ "$astate" == "installed" ]]; then
-            if [ "$is_cursor" = true ]; then
+            if [[ "${selected[$idx]}" != "1" ]]; then
+                # 제거 예정 - 빨간 취소선 느낌
+                if [ "$is_cursor" = true ]; then
+                    printf "\033[1m▸ \033[0m[${check}] \033[0;31m%-10s → %s\033[0m\033[K\n" "$name" "$value" > /dev/tty
+                else
+                    printf "  [${check}] \033[0;31m%-10s → %s\033[0m\033[K\n" "$name" "$value" > /dev/tty
+                fi
+            elif [ "$is_cursor" = true ]; then
                 printf "\033[1m▸ \033[0m\033[2m[${check}\033[2m] %-10s → %s\033[0m\033[K\n" "$name" "$value" > /dev/tty
             else
                 printf "  \033[2m[${check}\033[2m] %-10s → %s\033[0m\033[K\n" "$name" "$value" > /dev/tty
@@ -241,7 +251,7 @@ draw_menu() {
     done
 
     printf '\033[K\n' > /dev/tty
-    printf "  \033[2m%d/%d 선택됨\033[0m\033[K" "$sel_count" "$total_count" > /dev/tty
+    printf "  \033[2m%d/%d 선택됨  │  \033[0;32m✓\033[2m 추가/유지  \033[0;31m✗\033[2m 제거\033[0m\033[K" "$sel_count" "$total_count" > /dev/tty
 }
 
 select_aliases() {
