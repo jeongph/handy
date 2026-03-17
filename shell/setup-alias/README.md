@@ -112,7 +112,6 @@ alias c='claude'
 ### System
 | Alias | 명령어 |
 |-------|--------|
-| `cls` | `clear` |
 | `h` | `history` |
 | `ports` | `ss -tulanp` |
 | `myip` | `curl -s ifconfig.me` |

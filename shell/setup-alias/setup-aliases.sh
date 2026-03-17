@@ -38,7 +38,6 @@ ALIAS_ENTRIES=(
     "Docker|d|docker"
     "Docker|dc|docker compose"
     "Docker|dps|docker ps"
-    "System|cls|clear"
     "System|h|history"
     "System|ports|ss -tulanp"
     "System|myip|curl -s ifconfig.me"
