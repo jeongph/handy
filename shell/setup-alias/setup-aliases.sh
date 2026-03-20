@@ -17,9 +17,11 @@ NC='\033[0m'
 MARKER_BEGIN="# >>> https://jeongph.dev/handy/setup-aliases.sh >>>"
 MARKER_END="# <<< https://jeongph.dev/handy/setup-aliases.sh <<<"
 
-# 항상 포함되는 alias
-ALWAYS_ALIAS_NAME="alias-fetch"
-ALWAYS_ALIAS_VALUE="source <(curl -fsSL https://jeongph.dev/handy/setup-aliases.sh)"
+# 항상 포함되는 alias (이름|값)
+ALWAYS_ALIASES=(
+    "alias-fetch|source <(curl -fsSL https://jeongph.dev/handy/setup-aliases.sh)"
+    'alias-list|sed -n "/setup-aliases.sh >>>/,/setup-aliases.sh <<</{ /^alias /p }" "$HOME/.$(basename $SHELL)rc" 2>/dev/null'
+)
 
 # 카테고리|이름|값
 ALIAS_ENTRIES=(
@@ -190,14 +192,19 @@ draw_menu() {
 
     # 고정 alias
     printf "  \033[1;36m── Required ──\033[0m\033[K\n" > /dev/tty
-    if [[ "$always_status" == "changed" ]]; then
-        printf "  [\033[0;32m✓\033[0m] %-10s \033[0;31m%s\033[0m \033[2m=>\033[0m \033[0;32m%s\033[0m\033[K\n" \
-            "$ALWAYS_ALIAS_NAME" "$always_current" "$ALWAYS_ALIAS_VALUE" > /dev/tty
-    elif [[ "$always_status" == "installed" ]]; then
-        printf "  \033[2m[✓] %-10s → %s\033[0m\033[K\n" "$ALWAYS_ALIAS_NAME" "$ALWAYS_ALIAS_VALUE" > /dev/tty
-    else
-        printf "  [\033[0;32m✓\033[0m] %-10s \033[2m→\033[0m %s\033[K\n" "$ALWAYS_ALIAS_NAME" "$ALWAYS_ALIAS_VALUE" > /dev/tty
-    fi
+    for ((j=0; j<${#ALWAYS_ALIASES[@]}; j++)); do
+        local aentry="${ALWAYS_ALIASES[$j]}"
+        local aname="${aentry%%|*}"
+        local avalue="${aentry#*|}"
+        if [[ "${always_status[$j]}" == "changed" ]]; then
+            printf "  [\033[0;32m✓\033[0m] %-12s \033[0;31m%s\033[0m \033[2m=>\033[0m \033[0;32m%s\033[0m\033[K\n" \
+                "$aname" "${always_current[$j]}" "$avalue" > /dev/tty
+        elif [[ "${always_status[$j]}" == "installed" ]]; then
+            printf "  \033[2m[✓] %-12s → %s\033[0m\033[K\n" "$aname" "$avalue" > /dev/tty
+        else
+            printf "  [\033[0;32m✓\033[0m] %-12s \033[2m→\033[0m %s\033[K\n" "$aname" "$avalue" > /dev/tty
+        fi
+    done
 
     for entry in "${ALIAS_ENTRIES[@]}"; do
         local cat="${entry%%|*}"
@@ -310,19 +317,24 @@ analyze_aliases() {
     fi
 
     # 고정 alias
-    local current
-    current=$(block_alias_value "$ALWAYS_ALIAS_NAME")
-    if [ -n "$current" ]; then
-        if [[ "$current" == "$ALWAYS_ALIAS_VALUE" ]]; then
-            always_status="installed"
+    for ((j=0; j<${#ALWAYS_ALIASES[@]}; j++)); do
+        local aentry="${ALWAYS_ALIASES[$j]}"
+        local aname="${aentry%%|*}"
+        local avalue="${aentry#*|}"
+        local current
+        current=$(block_alias_value "$aname")
+        if [ -n "$current" ]; then
+            if [[ "$current" == "$avalue" ]]; then
+                always_status[$j]="installed"
+            else
+                always_status[$j]="changed"
+                always_current[$j]="$current"
+            fi
         else
-            always_status="changed"
-            always_current="$current"
+            always_status[$j]="new"
+            always_current[$j]=""
         fi
-    else
-        always_status="new"
-        always_current=""
-    fi
+    done
 
     # 선택 alias
     for ((i=0; i<${#ALIAS_ENTRIES[@]}; i++)); do
@@ -356,8 +368,8 @@ main() {
     typeset -a selected
     typeset -a alias_status
     typeset -a alias_current
-    local always_status=""
-    local always_current=""
+    typeset -a always_status
+    typeset -a always_current
     local block_cache=""
 
     while [[ $# -gt 0 ]]; do
@@ -439,7 +451,10 @@ main() {
 
         # 현재 셸에서 alias 해제 (source 실행 시)
         if [[ "${BASH_SOURCE[0]}" != "${0}" ]] 2>/dev/null || [ -n "$ZSH_EVAL_CONTEXT" ]; then
-            unalias "$ALWAYS_ALIAS_NAME" 2>/dev/null
+            for aentry in "${ALWAYS_ALIASES[@]}"; do
+                local aname="${aentry%%|*}"
+                unalias "$aname" 2>/dev/null
+            done
             for entry in "${ALIAS_ENTRIES[@]}"; do
                 local rest="${entry#*|}"
                 local name="${rest%%|*}"
@@ -477,16 +492,21 @@ main() {
     local unchanged=0
 
     # 고정 alias 상태
-    if [[ "$always_status" == "installed" ]]; then
-        echo -e "${DIM}[=]${NC} alias '$ALWAYS_ALIAS_NAME' 변경 없음"
-        unchanged=$((unchanged + 1))
-    elif [[ "$always_status" == "changed" ]]; then
-        echo -e "${CYAN}[UPDATE]${NC} alias ${ALWAYS_ALIAS_NAME}='${ALWAYS_ALIAS_VALUE}'"
-        updated=$((updated + 1))
-    else
-        echo -e "${GREEN}[ADD]${NC} alias ${ALWAYS_ALIAS_NAME}='${ALWAYS_ALIAS_VALUE}'"
-        added=$((added + 1))
-    fi
+    for ((j=0; j<${#ALWAYS_ALIASES[@]}; j++)); do
+        local aentry="${ALWAYS_ALIASES[$j]}"
+        local aname="${aentry%%|*}"
+        local avalue="${aentry#*|}"
+        if [[ "${always_status[$j]}" == "installed" ]]; then
+            echo -e "${DIM}[=]${NC} alias '$aname' 변경 없음"
+            unchanged=$((unchanged + 1))
+        elif [[ "${always_status[$j]}" == "changed" ]]; then
+            echo -e "${CYAN}[UPDATE]${NC} alias ${aname}='${avalue}'"
+            updated=$((updated + 1))
+        else
+            echo -e "${GREEN}[ADD]${NC} alias ${aname}='${avalue}'"
+            added=$((added + 1))
+        fi
+    done
 
     # 선택 alias 상태
     for ((i=0; i<${#ALIAS_ENTRIES[@]}; i++)); do
@@ -518,7 +538,11 @@ main() {
     {
         echo ""
         echo "$MARKER_BEGIN"
-        echo "alias ${ALWAYS_ALIAS_NAME}='${ALWAYS_ALIAS_VALUE}'"
+        for aentry in "${ALWAYS_ALIASES[@]}"; do
+            local aname="${aentry%%|*}"
+            local avalue="${aentry#*|}"
+            echo "alias ${aname}='${avalue}'"
+        done
         for ((i=0; i<${#ALIAS_ENTRIES[@]}; i++)); do
             [[ "${selected[$i]}" != "1" ]] && continue
             local entry="${ALIAS_ENTRIES[$i]}"
