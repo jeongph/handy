@@ -20,14 +20,14 @@ MARKER_END="# <<< https://jeongph.dev/handy/setup-aliases.sh <<<"
 # 항상 포함되는 alias (이름|값)
 ALWAYS_ALIASES=(
     "alias-fetch|source <(curl -fsSL https://jeongph.dev/handy/setup-aliases.sh)"
-    'alias-list|sed -n "/setup-aliases.sh >>>/,/setup-aliases.sh <<</{ /^alias /p }" "$HOME/.$(basename $SHELL)rc" 2>/dev/null'
+    'alias-list|sed -n "/^# >>>/,/^# <<</{ /^alias /p }" "$HOME/.$(basename $SHELL)rc" 2>/dev/null'
 )
 
 # 카테고리|이름|값
 ALIAS_ENTRIES=(
     "Claude Code|c|claude"
-    "Claude Code|cx|claude --dangerously-skip-permissions --effort max"
-    "Claude Code|c-sudo|claude --dangerously-skip-permissions"
+    "Claude Code|cx|claude --dangerously-skip-permissions --model opus --effort max"
+    "Claude Code|c-yolo|claude --dangerously-skip-permissions"
     "Tmux|t|tmux"
     "Tmux|tn|tmux new -s"
     "Tmux|tls|tmux ls"
@@ -271,9 +271,20 @@ select_aliases() {
     local count=${#ALIAS_ENTRIES[@]}
     cursor=0
 
-    for ((i=0; i<count; i++)); do
-        selected[$i]=1
-    done
+    # 기존 블록이 있으면 설치된 alias만 선택, 첫 설치면 전체 선택
+    if [ -n "$block_cache" ]; then
+        for ((i=0; i<count; i++)); do
+            if [[ "${alias_status[$i]}" == "installed" || "${alias_status[$i]}" == "changed" ]]; then
+                selected[$i]=1
+            else
+                selected[$i]=0
+            fi
+        done
+    else
+        for ((i=0; i<count; i++)); do
+            selected[$i]=1
+        done
+    fi
 
     # 대체 화면 진입 + 커서 숨기기
     printf '\033[?1049h\033[?25l' > /dev/tty
