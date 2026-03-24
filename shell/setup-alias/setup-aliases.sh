@@ -26,7 +26,7 @@ ALWAYS_ALIASES=(
 # 카테고리|이름|값
 ALIAS_ENTRIES=(
     "Claude Code|c|claude"
-    "Claude Code|cx|claude --dangerously-skip-permissions --model opus --effort max"
+    "Claude Code|cx|claude --dangerously-skip-permissions --effort max"# --model opus"
     "Claude Code|c-yolo|claude --dangerously-skip-permissions"
     "Tmux|t|tmux"
     "Tmux|tn|tmux new -s"
