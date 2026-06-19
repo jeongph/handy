@@ -20,7 +20,7 @@ MARKER_END="# <<< https://jeongph.dev/handy/setup-alias <<<"
 # 항상 포함되는 alias (이름|값)
 ALWAYS_ALIASES=(
     "alias-fetch|source <(curl -fsSL https://jeongph.dev/handy/setup-alias)"
-    'alias-list|sed -n "/^# >>>/,/^# <<</{ /^alias /p }" "$HOME/.$(basename $SHELL)rc" 2>/dev/null'
+    'alias-list|sed -n "/^# >>>/,/^# <<</{ /^alias /p; }" "$HOME/.$(basename $SHELL)rc" 2>/dev/null'
 )
 
 # 카테고리|이름|값
