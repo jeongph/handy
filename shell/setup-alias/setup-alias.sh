@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# setup-aliases.sh
+# setup-alias.sh
 # 자주 사용하는 alias들을 쉘 RC 파일에 선택적으로 추가하는 스크립트
 # 마커 블록으로 관리하여 설치/업데이트/제거를 안전하게 처리
 

@@ -182,4 +182,4 @@ if command -v claude >/dev/null 2>&1; then
 fi
 echo -e "${DIM}PATH/alias 는 자동으로 건드리지 않았습니다:${NC}"
 echo -e "${DIM}  - ~/.zshrc 의 export PATH=\"\$HOME/.local/bin:\$PATH\" 는 다른 도구도 쓰므로 직접 판단${NC}"
-echo -e "${DIM}  - c / cx / c-yolo alias 는 setup-aliases.sh --remove 로 제거${NC}"
+echo -e "${DIM}  - c / cx / c-yolo alias 는 setup-alias.sh --remove 로 제거${NC}"
