@@ -70,6 +70,7 @@ alias c='claude'
 - 설치/업데이트 시 블록 전체를 교체
 - `--remove` 시 블록 전체를 삭제
 - 블록 밖의 사용자 alias에는 영향 없음
+- 구 URL(`jeongph.dev/handy/...`)로 설치됐던 레거시 블록은 **재설치/제거 시 자동 정리**
 
 ## 포함된 Alias
 

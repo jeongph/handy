@@ -17,6 +17,14 @@ NC='\033[0m'
 MARKER_BEGIN="# >>> https://handy.jeongph.dev/setup-alias >>>"
 MARKER_END="# <<< https://handy.jeongph.dev/setup-alias <<<"
 
+# 레거시 마커 (구 URL로 설치된 블록 — 재설치/제거 시 함께 청소하여 자동 마이그레이션)
+LEGACY_MARKER_BEGIN=(
+    "# >>> https://jeongph.dev/handy/setup-alias >>>"
+)
+LEGACY_MARKER_END=(
+    "# <<< https://jeongph.dev/handy/setup-alias <<<"
+)
+
 # 항상 포함되는 alias (이름|값)
 ALWAYS_ALIASES=(
     "alias-fetch|source <(curl -fsSL https://handy.jeongph.dev/setup-alias)"
@@ -89,7 +97,13 @@ select_rc_file() {
 
 block_exists() {
     local rc_file="$1"
-    grep -Fq "$MARKER_BEGIN" "$rc_file" 2>/dev/null
+    grep -Fq "$MARKER_BEGIN" "$rc_file" 2>/dev/null && return 0
+    # 레거시 마커도 "블록 있음"으로 인식 (--remove 시 마이그레이션 정리)
+    local b
+    for b in "${LEGACY_MARKER_BEGIN[@]}"; do
+        grep -Fq "$b" "$rc_file" 2>/dev/null && return 0
+    done
+    return 1
 }
 
 get_block_content() {
@@ -102,12 +116,13 @@ get_block_content() {
     sed -n "${start_line},${end_line}p" "$rc_file"
 }
 
-remove_block() {
-    local rc_file="$1"
+# 단일 마커쌍 블록 제거 (마커 앞 빈 줄 포함)
+remove_marker_block() {
+    local rc_file="$1" begin="$2" end="$3"
     local start_line end_line
-    start_line=$(grep -Fn "$MARKER_BEGIN" "$rc_file" 2>/dev/null | head -1 | cut -d: -f1)
+    start_line=$(grep -Fn "$begin" "$rc_file" 2>/dev/null | head -1 | cut -d: -f1)
     [ -z "$start_line" ] && return 0
-    end_line=$(grep -Fn "$MARKER_END" "$rc_file" 2>/dev/null | head -1 | cut -d: -f1)
+    end_line=$(grep -Fn "$end" "$rc_file" 2>/dev/null | head -1 | cut -d: -f1)
     [ -z "$end_line" ] && return 0
     # 마커 앞 빈 줄도 함께 제거
     if [ "$start_line" -gt 1 ]; then
@@ -116,6 +131,17 @@ remove_block() {
         [ -z "$prev_line" ] && start_line=$((start_line - 1))
     fi
     sed "${start_line},${end_line}d" "$rc_file" > "${rc_file}.tmp.$$" && mv "${rc_file}.tmp.$$" "$rc_file"
+}
+
+remove_block() {
+    local rc_file="$1"
+    # 신 마커 블록 제거
+    remove_marker_block "$rc_file" "$MARKER_BEGIN" "$MARKER_END"
+    # 레거시 마커 블록도 제거 (구 URL → 신 URL 자동 마이그레이션)
+    local i
+    for i in "${!LEGACY_MARKER_BEGIN[@]}"; do
+        remove_marker_block "$rc_file" "${LEGACY_MARKER_BEGIN[$i]}" "${LEGACY_MARKER_END[$i]}"
+    done
 }
 
 # 블록 캐시에서 특정 alias 값 추출
