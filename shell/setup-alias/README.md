@@ -30,10 +30,10 @@ source <(curl -fsSL https://jeongph.dev/handy/setup-alias) --all
 source <(curl -fsSL https://jeongph.dev/handy/setup-alias) --remove
 
 # 대화형 모드 (RC 파일 직접 선택)
-./setup-aliases.sh -i
+./setup-alias.sh -i
 
 # 도움말
-./setup-aliases.sh -h
+./setup-alias.sh -h
 ```
 
 ## 체크박스 조작법
@@ -83,7 +83,7 @@ alias c='claude'
 |-------|--------|
 | `c` | `claude` |
 | `cx` | `claude --dangerously-skip-permissions --effort max` |
-| `c-sudo` | `claude --dangerously-skip-permissions` |
+| `c-yolo` | `claude --dangerously-skip-permissions` |
 
 ### Tmux
 | Alias | 명령어 |
