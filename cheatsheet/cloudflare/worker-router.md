@@ -1,12 +1,12 @@
 # Cloudflare Worker 라우터 — 단축 도메인 자동화
 
-`jeongph.dev/handy/<name>` 요청을 GitHub raw 스크립트로 연결하는 Worker.
+`handy.jeongph.dev/<name>` 요청을 GitHub raw 스크립트로 연결하는 Worker.
 **한 번 배포하면 새 스크립트를 추가해도 코드를 다시 건드릴 필요가 없다** — 경로의 `<name>`을 폴더 구조에 그대로 매핑하기 때문.
 
 매핑 규칙:
 
 ```
-jeongph.dev/handy/<name>
+handy.jeongph.dev/<name>
    → raw.githubusercontent.com/jeongph/handy/main/shell/<name>/<name>.sh
 ```
 
@@ -15,15 +15,15 @@ jeongph.dev/handy/<name>
 ## Worker 코드
 
 ```js
-// jeongph.dev/handy/<name> → raw.githubusercontent.com/jeongph/handy/main/shell/<name>/<name>.sh
+// handy.jeongph.dev/<name> → raw.githubusercontent.com/jeongph/handy/main/shell/<name>/<name>.sh
 export default {
   async fetch(request) {
     const path = new URL(request.url).pathname
-      .replace(/^\/handy\/?/, "")
+      .replace(/^\//, "")
       .replace(/\/$/, "");
 
     if (!path) {
-      return new Response("usage: curl -fsSL https://jeongph.dev/handy/<script-name>\n", {
+      return new Response("usage: curl -fsSL https://handy.jeongph.dev/<script-name>\n", {
         status: 400,
       });
     }
@@ -43,7 +43,7 @@ export default {
 };
 ```
 
-- 빈 경로(`/handy/`)는 사용법 안내(400)
+- 빈 경로(`/`)는 사용법 안내(400)
 - 없는 스크립트는 GitHub 상태코드 그대로(보통 404)
 - `cacheTtl: 300` — 5분 캐시로 GitHub 부하·지연 감소
 - `content-type`을 셸 스크립트로 명시
@@ -55,20 +55,19 @@ export default {
 1. **Cloudflare 대시보드** 로그인 → 왼쪽 메뉴 **Workers & Pages**
 2. **Create** → **Create Worker** → 이름을 `handy-router` 로 두고 **Deploy** (기본 템플릿으로 일단 배포)
 3. 배포된 Worker → **Edit code** → 기본 코드를 지우고 위 **Worker 코드** 붙여넣기 → **Deploy**
-4. Worker → **Settings** → **Domains & Routes** (또는 **Triggers → Routes**) → **Add** → **Route** 선택
-   - **Route**: `jeongph.dev/handy/*`
-   - **Zone**: `jeongph.dev`
-   - 저장
-   > ⚠️ **Custom Domain이 아니라 Route**를 쓴다. Custom Domain은 서브도메인 전체를 잡지만, 우리는 `jeongph.dev`의 `/handy/*` 경로만 필요하다.
+4. Worker → **Settings** → **Domains & Routes** → **Add** → **Custom Domain** 선택
+   - **Domain**: `handy.jeongph.dev`
+   - 추가하면 Cloudflare가 **DNS 레코드를 자동 생성**한다 (별도 DNS 등록 불필요)
+   > `jeongph.dev` zone이 이미 Cloudflare에 있어야 한다 (있음). Custom Domain은 서브도메인 전체를 이 Worker로 연결한다.
 
 ## 테스트
 
 ```sh
 # raw 스크립트 내용이 그대로 나오면 성공
-curl -fsSL https://jeongph.dev/handy/setup-alias | head
+curl -fsSL https://handy.jeongph.dev/setup-alias | head
 
 # 없는 이름은 404
-curl -i https://jeongph.dev/handy/nope
+curl -i https://handy.jeongph.dev/nope
 ```
 
 문제가 있으면 Worker의 **Logs**(실시간 로그) 탭에서 요청을 확인한다.
@@ -77,7 +76,7 @@ curl -i https://jeongph.dev/handy/nope
 
 1. `shell/<new-name>/<new-name>.sh` + `README.md` 생성 (기존 패턴 그대로)
 2. `main`에 머지
-3. 끝 — `jeongph.dev/handy/<new-name>` 이 자동으로 동작 (**Worker 수정 불필요**)
+3. 끝 — `handy.jeongph.dev/<new-name>` 이 자동으로 동작 (**Worker 수정 불필요**)
 
 ## 비용
 

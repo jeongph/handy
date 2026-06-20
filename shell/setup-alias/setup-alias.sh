@@ -14,12 +14,12 @@ DIM='\033[2m'
 NC='\033[0m'
 
 # 마커
-MARKER_BEGIN="# >>> https://jeongph.dev/handy/setup-alias >>>"
-MARKER_END="# <<< https://jeongph.dev/handy/setup-alias <<<"
+MARKER_BEGIN="# >>> https://handy.jeongph.dev/setup-alias >>>"
+MARKER_END="# <<< https://handy.jeongph.dev/setup-alias <<<"
 
 # 항상 포함되는 alias (이름|값)
 ALWAYS_ALIASES=(
-    "alias-fetch|source <(curl -fsSL https://jeongph.dev/handy/setup-alias)"
+    "alias-fetch|source <(curl -fsSL https://handy.jeongph.dev/setup-alias)"
     'alias-list|sed -n "/^# >>>/,/^# <<</{ /^alias /p; }" "$HOME/.$(basename $SHELL)rc" 2>/dev/null'
 )
 

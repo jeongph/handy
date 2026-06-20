@@ -10,20 +10,20 @@
 ## 원격 실행
 
 ```sh
-bash <(curl -fsSL https://jeongph.dev/handy/<스크립트명>)
+bash <(curl -fsSL https://handy.jeongph.dev/<스크립트명>)
 ```
 
-> 단축 도메인 `jeongph.dev/handy/*`는 Cloudflare Worker 라우터가 GitHub raw로 연결한다.
+> 단축 도메인 `handy.jeongph.dev/*`는 Cloudflare Worker 라우터가 GitHub raw로 연결한다.
 > 라우터 코드·셋업: [cheatsheet/cloudflare/worker-router.md](cheatsheet/cloudflare/worker-router.md)
 
 ## 스크립트 (shell/)
 
 | 이름 | 설명 | 실행 |
 |------|------|------|
-| [setup-alias](shell/setup-alias/) | 자주 쓰는 alias 선택 설치/제거 | `source <(curl -fsSL https://jeongph.dev/handy/setup-alias)` |
-| [setup-git-config](shell/setup-git-config/) | git 글로벌 user 설정 (본인 정보 기본값) | `bash <(curl -fsSL https://jeongph.dev/handy/setup-git-config)` |
-| [git-init-to](shell/git-init-to/) | 로컬 프로젝트를 원격 저장소로 초기화·푸시 | `bash <(curl -fsSL https://jeongph.dev/handy/git-init-to)` |
-| [git-ignore-reset](shell/git-ignore-reset/) | `.gitignore` 변경 후 캐시 재설정 | `bash <(curl -fsSL https://jeongph.dev/handy/git-ignore-reset)` |
+| [setup-alias](shell/setup-alias/) | 자주 쓰는 alias 선택 설치/제거 | `source <(curl -fsSL https://handy.jeongph.dev/setup-alias)` |
+| [setup-git-config](shell/setup-git-config/) | git 글로벌 user 설정 (본인 정보 기본값) | `bash <(curl -fsSL https://handy.jeongph.dev/setup-git-config)` |
+| [git-init-to](shell/git-init-to/) | 로컬 프로젝트를 원격 저장소로 초기화·푸시 | `bash <(curl -fsSL https://handy.jeongph.dev/git-init-to)` |
+| [git-ignore-reset](shell/git-ignore-reset/) | `.gitignore` 변경 후 캐시 재설정 | `bash <(curl -fsSL https://handy.jeongph.dev/git-ignore-reset)` |
 | [ssh-config-sync](shell/ssh-config-sync/) | SSH config 병합·동기화 | clone 후 로컬 실행 (로컬 설정 파일 필요) |
 | [claude-code-clean-remove](shell/claude-code-clean-remove/) | Claude Code 네이티브 설치본 제거 | clone 후 로컬 실행 (일반 터미널) |
 | [chmod755](shell/chmod755/) | 현재 디렉토리에 755 권한 부여 | 로컬 실행 |

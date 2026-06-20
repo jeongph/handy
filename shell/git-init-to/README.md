@@ -17,7 +17,7 @@
 
 ```sh
 # 원격
-bash <(curl -fsSL https://jeongph.dev/handy/git-init-to)
+bash <(curl -fsSL https://handy.jeongph.dev/git-init-to)
 # 로컬
 bash shell/git-init-to/git-init-to.sh
 ```

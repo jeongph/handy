@@ -14,7 +14,7 @@
 
 ```sh
 # 원격
-bash <(curl -fsSL https://jeongph.dev/handy/git-ignore-reset)
+bash <(curl -fsSL https://handy.jeongph.dev/git-ignore-reset)
 # 로컬
 bash shell/git-ignore-reset/git-ignore-reset.sh
 ```

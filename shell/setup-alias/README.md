@@ -5,7 +5,7 @@
 ## 실행
 
 ```bash
-source <(curl -fsSL https://jeongph.dev/handy/setup-alias)
+source <(curl -fsSL https://handy.jeongph.dev/setup-alias)
 ```
 
 체크박스 UI에서 원하는 alias를 선택한 뒤 Enter로 적용
@@ -15,7 +15,7 @@ source <(curl -fsSL https://jeongph.dev/handy/setup-alias)
 ## 제거
 
 ```bash
-source <(curl -fsSL https://jeongph.dev/handy/setup-alias) --remove
+source <(curl -fsSL https://handy.jeongph.dev/setup-alias) --remove
 ```
 
 스크립트가 설치한 모든 alias를 RC 파일에서 제거하고 현재 셸에서 해제
@@ -24,10 +24,10 @@ source <(curl -fsSL https://jeongph.dev/handy/setup-alias) --remove
 
 ```bash
 # 전체 alias 추가 (선택 UI 생략)
-source <(curl -fsSL https://jeongph.dev/handy/setup-alias) --all
+source <(curl -fsSL https://handy.jeongph.dev/setup-alias) --all
 
 # 제거
-source <(curl -fsSL https://jeongph.dev/handy/setup-alias) --remove
+source <(curl -fsSL https://handy.jeongph.dev/setup-alias) --remove
 
 # 대화형 모드 (RC 파일 직접 선택)
 ./setup-alias.sh -i
@@ -60,11 +60,11 @@ source <(curl -fsSL https://jeongph.dev/handy/setup-alias) --remove
 스크립트는 마커 블록으로 alias를 관리합니다:
 
 ```bash
-# >>> https://jeongph.dev/handy/setup-alias >>>
-alias alias-fetch='source <(curl -fsSL https://jeongph.dev/handy/setup-alias)'
+# >>> https://handy.jeongph.dev/setup-alias >>>
+alias alias-fetch='source <(curl -fsSL https://handy.jeongph.dev/setup-alias)'
 alias c='claude'
 ...
-# <<< https://jeongph.dev/handy/setup-alias <<<
+# <<< https://handy.jeongph.dev/setup-alias <<<
 ```
 
 - 설치/업데이트 시 블록 전체를 교체
@@ -76,7 +76,7 @@ alias c='claude'
 ### 필수 (항상 포함)
 | Alias | 명령어 |
 |-------|--------|
-| `alias-fetch` | `source <(curl -fsSL https://jeongph.dev/handy/setup-alias)` |
+| `alias-fetch` | `source <(curl -fsSL https://handy.jeongph.dev/setup-alias)` |
 
 ### Claude Code
 | Alias | 명령어 |
