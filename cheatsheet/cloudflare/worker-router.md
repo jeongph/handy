@@ -28,6 +28,11 @@ export default {
       });
     }
 
+    // 스크립트 이름 allowlist — path traversal/SSRF 방지 (단일 이름만 허용, '.' '/' '%' 거부)
+    if (!/^[a-z0-9][a-z0-9_-]{0,63}$/i.test(path)) {
+      return new Response("invalid script name\n", { status: 400 });
+    }
+
     const rawUrl = `https://raw.githubusercontent.com/jeongph/handy/main/shell/${path}/${path}.sh`;
     const upstream = await fetch(rawUrl, { cf: { cacheTtl: 300 } });
 
