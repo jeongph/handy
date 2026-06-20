@@ -13,8 +13,7 @@
 bash <(curl -fsSL https://handy.jeongph.dev/<스크립트명>)
 ```
 
-> 단축 도메인 `handy.jeongph.dev/*`는 Cloudflare Worker 라우터가 GitHub raw로 연결한다.
-> 라우터 코드·셋업: [cheatsheet/cloudflare/worker-router.md](cheatsheet/cloudflare/worker-router.md)
+> 단축 도메인 `handy.jeongph.dev/*`는 Cloudflare Worker 라우터가 GitHub raw로 연결한다. (셋업: #9)
 
 ## 스크립트 (shell/)
 
