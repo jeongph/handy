@@ -54,7 +54,7 @@ Claude Code 네이티브 설치본(`curl -fsSL https://claude.ai/install.sh | ba
 안전을 위해 다음은 스크립트가 손대지 않고 안내만 한다.
 
 - **PATH** — `~/.zshrc` 의 `export PATH="$HOME/.local/bin:$PATH"` 는 claude 전용이 아니라 `~/.local/bin` 의 다른 도구(pipx 등)도 쓰므로 직접 판단해 제거한다.
-- **alias** — `c` / `cx` / `c-yolo` 는 [`setup-alias.sh`](../setup-alias/setup-alias.sh) 가 관리하므로 거기서 제거한다:
+- **alias** — `c` / `ca` / `cx` / `cy` 는 [`setup-alias.sh`](../setup-alias/setup-alias.sh) 가 관리하므로 거기서 제거한다:
   ```bash
   ./setup-alias.sh --remove
   ```

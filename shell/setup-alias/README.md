@@ -83,8 +83,9 @@ alias c='claude'
 | Alias | 명령어 |
 |-------|--------|
 | `c` | `claude` |
+| `ca` | `claude --allow-dangerously-skip-permissions` |
 | `cx` | `claude --dangerously-skip-permissions --effort max` |
-| `c-yolo` | `claude --dangerously-skip-permissions` |
+| `cy` | `claude --dangerously-skip-permissions` |
 
 ### Tmux
 | Alias | 명령어 |
