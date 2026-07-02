@@ -18,11 +18,14 @@ MARKER_BEGIN="# >>> https://handy.jeongph.dev/setup-alias >>>"
 MARKER_END="# <<< https://handy.jeongph.dev/setup-alias <<<"
 
 # 레거시 마커 (구 URL로 설치된 블록 — 재설치/제거 시 함께 청소하여 자동 마이그레이션)
+# 세대별로 URL/파일명이 바뀌었으므로 과거 마커를 모두 나열한다 (BEGIN/END 인덱스 대응)
 LEGACY_MARKER_BEGIN=(
     "# >>> https://jeongph.dev/handy/setup-alias >>>"
+    "# >>> https://jeongph.dev/handy/setup-aliases.sh >>>"
 )
 LEGACY_MARKER_END=(
     "# <<< https://jeongph.dev/handy/setup-alias <<<"
+    "# <<< https://jeongph.dev/handy/setup-aliases.sh <<<"
 )
 
 # 항상 포함되는 alias (이름|값)
@@ -139,8 +142,9 @@ remove_block() {
     # 신 마커 블록 제거
     remove_marker_block "$rc_file" "$MARKER_BEGIN" "$MARKER_END"
     # 레거시 마커 블록도 제거 (구 URL → 신 URL 자동 마이그레이션)
+    # 인덱스 순회는 C-style로 — zsh는 bash의 ${!arr[@]}를 지원하지 않아 bad substitution이 난다
     local i
-    for i in "${!LEGACY_MARKER_BEGIN[@]}"; do
+    for ((i=0; i<${#LEGACY_MARKER_BEGIN[@]}; i++)); do
         remove_marker_block "$rc_file" "${LEGACY_MARKER_BEGIN[$i]}" "${LEGACY_MARKER_END[$i]}"
     done
 }
