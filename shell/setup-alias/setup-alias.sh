@@ -38,8 +38,11 @@ ALWAYS_ALIASES=(
 ALIAS_ENTRIES=(
     "Claude Code|c|claude"
     "Claude Code|ca|claude --allow-dangerously-skip-permissions"
-    "Claude Code|cx|claude --dangerously-skip-permissions --effort max"
+    "Claude Code|cx|claude --dangerously-skip-permissions --model opus --effort max"
     "Claude Code|cy|claude --dangerously-skip-permissions"
+    "Claude Code|cs|claude --model sonnet --effort xhigh --allow-dangerously-skip-permissions"
+    "Claude Code|co|claude --model opus --effort xhigh --allow-dangerously-skip-permissions"
+    "Claude Code|cf|claude --model fable --effort high --allow-dangerously-skip-permissions"
     "Tmux|t|tmux"
     "Tmux|tn|tmux new -s"
     "Tmux|tls|tmux ls"
