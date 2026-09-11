@@ -1,8 +1,8 @@
 # Claude Code Clean Remove
 
-Claude Code 네이티브 설치본(`curl -fsSL https://claude.ai/install.sh | bash` 로 깐 것)을 깔끔하게 제거하는 스크립트.
+Claude Code 네이티브 설치본(`curl -fsSL https://claude.ai/install.sh | bash` 로 설치한 것)을 제거하는 스크립트다.
 
-`install.sh` 는 `claude install` 을 호출해 런처/버전 저장소를 `~/.local` 아래에 깔기 때문에 별도 uninstall 명령이 없다 → 수동 삭제가 정답.
+이 스크립트는 `install.sh`가 `claude install`로 설치한 `~/.local` 아래의 런처와 버전 저장소를 삭제한다.
 
 > ⚠️ **Claude Code 안에서 실행하지 말 것.** 실행 중인 자기 자신을 지우게 된다. 일반 터미널 창에서 실행한다. (스크립트가 `CLAUDECODE` 환경변수를 감지해 막아준다.)
 
@@ -27,7 +27,7 @@ Claude Code 네이티브 설치본(`curl -fsSL https://claude.ai/install.sh | ba
 | 모드 | 제거 대상 | 용도 |
 |------|-----------|------|
 | `--binary` | 런처 + 버전 저장소 | 깔끔히 재설치 (설정·로그인·플러그인 유지) |
-| `--full` | 위 + 설정·데이터·전역설정·Keychain 로그인 | 흔적까지 완전 삭제 |
+| `--full` | 위 + 설정·데이터·전역설정·Keychain 로그인 | 설정과 로그인 정보까지 삭제 |
 
 ## 삭제되는 항목
 

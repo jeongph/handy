@@ -1,4 +1,4 @@
-> 현재 깃 폴더를 이 계정으로 로컬 설정
+# 현재 Git 저장소의 사용자 정보 설정
 
 ``` sh
 git config --local user.name "JeongUk Park"

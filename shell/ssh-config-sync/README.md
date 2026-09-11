@@ -2,7 +2,7 @@
 
 ## 사용 방법
 
-1. 이 Repository 가져오기
+1. 이 저장소 내려받기
 ``` sh
 git clone https://github.com/jeongph/handy.git && cd handy
 ```
@@ -25,6 +25,6 @@ vim ~/.ssh/config
 
 ## 기능 설명
 
-1. 기존 ssh config (`~/.ssh/config`) 파일 백업 to `config.bak.timestamp`
-2. config.common 과 (있다면) config.local 파일을 병합하여 config 파일 생성
-3. 권한 정리
+1. 기존 SSH 설정 파일(`~/.ssh/config`)을 `config.bak.timestamp`로 백업한다
+2. `config.common`과 `config.local`(있는 경우)을 병합해 설정 파일을 생성한다
+3. 생성한 파일의 권한을 설정한다

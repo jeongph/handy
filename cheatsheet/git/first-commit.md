@@ -1,4 +1,4 @@
-> 기존 프로젝트를 비어있는 Repository 에 밀어넣기
+# 기존 프로젝트를 빈 원격 저장소에 올리기
 
 ``` sh
 read -p "Enter remote repository URL: " URL
