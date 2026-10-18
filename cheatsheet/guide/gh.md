@@ -226,7 +226,7 @@ gh pr create --reviewer user1,user2 --label bug --base develop
 gh pr create --web
 ```
 
-본문에 `Fixes #123` 또는 `Closes #123`을 포함하면 머지 시 해당 이슈가 자동으로 닫힌다.
+본문에 `Fixes #123` 또는 `Closes #123`을 넣으면 머지할 때 그 이슈가 자동으로 닫힌다.
 
 ### 조회
 
@@ -388,7 +388,7 @@ gh search code <query>               # 코드 검색
 
 ## 10. API 직접 호출
 
-`gh api`를 사용하면 인증 처리를 자동으로 해주므로 curl 대신 편리하게 사용할 수 있다.
+`gh api`는 인증을 자동으로 처리해 주므로 curl 대신 편하게 쓸 수 있다.
 
 ```bash
 # GET

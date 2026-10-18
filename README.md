@@ -1,11 +1,11 @@
 # handy
 
-자주 쓰는 셸 스크립트·치트시트 모음.
+자주 쓰는 셸 스크립트와 치트시트 모음.
 
 ## 구조
 
-- `shell/` — 실행 스크립트 (각 폴더에 스크립트 + 사용법 `README.md`)
-- `cheatsheet/` — 읽는 치트시트·가이드 문서
+- `shell/`: 실행 스크립트 (각 폴더에 스크립트와 사용법 `README.md`)
+- `cheatsheet/`: 읽는 치트시트와 가이드 문서
 
 ## 원격 실행
 
@@ -35,7 +35,7 @@ bash <(curl -fsSL https://handy.jeongph.dev/setup-git-config)
 
 ### [git-init-to](shell/git-init-to/)
 
-로컬 프로젝트를 원격 저장소로 초기화·푸시
+로컬 프로젝트를 초기화하고 원격 저장소로 푸시
 
 ```sh
 bash <(curl -fsSL https://handy.jeongph.dev/git-init-to)
@@ -51,18 +51,18 @@ bash <(curl -fsSL https://handy.jeongph.dev/git-ignore-reset)
 
 ### [ssh-config-sync](shell/ssh-config-sync/)
 
-SSH config 병합·동기화 — clone 후 로컬 실행 (로컬 설정 파일 필요). [사용법](shell/ssh-config-sync/)
+SSH config 병합과 동기화. clone 후 로컬에서 실행 (로컬 설정 파일 필요). [사용법](shell/ssh-config-sync/)
 
 ### [claude-code-clean-remove](shell/claude-code-clean-remove/)
 
-Claude Code 네이티브 설치본 제거 — clone 후 일반 터미널에서 실행. [사용법](shell/claude-code-clean-remove/)
+Claude Code 네이티브 설치본 제거. clone 후 일반 터미널에서 실행. [사용법](shell/claude-code-clean-remove/)
 
 ### [chmod755](shell/chmod755/)
 
-현재 디렉토리에 755 권한 부여 — 로컬 실행. [사용법](shell/chmod755/)
+현재 디렉토리에 755 권한 부여. 로컬에서 실행. [사용법](shell/chmod755/)
 
 ## 치트시트 (cheatsheet/)
 
-- **guide** — [gh](cheatsheet/guide/gh.md) · [tmux](cheatsheet/guide/tmux.md) · [claude-code](cheatsheet/guide/claude-code.md)
-- **git** — [first-commit](cheatsheet/git/first-commit.md) · [local-config](cheatsheet/git/local-config.md)
-- **macos** — [env-variables](cheatsheet/macos/env-variables.md)
+- **guide**: [gh](cheatsheet/guide/gh.md), [tmux](cheatsheet/guide/tmux.md), [claude-code](cheatsheet/guide/claude-code.md)
+- **git**: [first-commit](cheatsheet/git/first-commit.md), [local-config](cheatsheet/git/local-config.md)
+- **macos**: [env-variables](cheatsheet/macos/env-variables.md)

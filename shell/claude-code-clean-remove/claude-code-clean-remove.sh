@@ -4,11 +4,11 @@ set -euo pipefail
 # claude-code-clean-remove.sh
 # Claude Code 네이티브 설치본을 깔끔하게 제거하는 스크립트
 # 설치 방식: curl -fsSL https://claude.ai/install.sh | bash
-#   (install.sh -> claude install 이 런처/버전 저장소를 ~/.local 아래에 설치)
+#   (install.sh -> claude install이 런처/버전 저장소를 ~/.local 아래에 설치)
 #
 # 모드
-#   --binary  바이너리/런처/버전 저장소만 제거 (설정·로그인·플러그인 유지)
-#   --full    위 + 설정·데이터·전역설정·Keychain 로그인까지 완전 삭제
+#   --binary  바이너리/런처/버전 저장소만 제거 (설정, 로그인, 플러그인 유지)
+#   --full    위 + 설정, 데이터, 전역 설정, Keychain 로그인까지 완전 삭제
 #   (미지정)  대화형으로 선택
 
 # 색상
@@ -23,8 +23,8 @@ NC='\033[0m'
 # 제거 대상 경로
 BIN_LINK="$HOME/.local/bin/claude"          # 런처(심볼릭 링크)
 VERSION_STORE="$HOME/.local/share/claude"   # 버전 바이너리 저장소
-CONFIG_DIR="$HOME/.claude"                  # 설정·프로젝트·플러그인·세션·기록
-CONFIG_JSON="$HOME/.claude.json"            # 전역 설정·로그인 상태
+CONFIG_DIR="$HOME/.claude"                  # 설정, 프로젝트, 플러그인, 세션, 기록
+CONFIG_JSON="$HOME/.claude.json"            # 전역 설정과 로그인 상태
 CONFIG_JSON_BAK="$HOME/.claude.json.backup"
 KEYCHAIN_SERVICE="Claude Code-credentials"  # macOS Keychain 로그인 인증정보
 
@@ -37,8 +37,8 @@ usage() {
 사용법: $(basename "$0") [옵션]
 
 옵션:
-  --binary       바이너리/런처/버전 저장소만 제거 (설정·로그인 유지)
-  --full         설정·데이터·전역설정·Keychain 로그인까지 완전 삭제
+  --binary       바이너리/런처/버전 저장소만 제거 (설정과 로그인 유지)
+  --full         설정, 데이터, 전역 설정, Keychain 로그인까지 완전 삭제
   -y, --yes      확인 프롬프트 없이 진행
   -n, --dry-run  실제로 삭제하지 않고 대상만 출력
   -h, --help     도움말 출력
@@ -180,6 +180,6 @@ echo -e "${GREEN}완료.${NC}"
 if command -v claude >/dev/null 2>&1; then
     echo -e "${YELLOW}참고:${NC} 현재 셸에 'claude'가 아직 잡힙니다. 새 터미널을 열거나 ${BOLD}hash -r${NC} 후 ${BOLD}which claude${NC}로 확인하세요."
 fi
-echo -e "${DIM}PATH/alias 는 자동으로 건드리지 않았습니다:${NC}"
-echo -e "${DIM}  - ~/.zshrc 의 export PATH=\"\$HOME/.local/bin:\$PATH\" 는 다른 도구도 쓰므로 직접 판단${NC}"
-echo -e "${DIM}  - c / ca / cx / cy alias 는 setup-alias.sh --remove 로 제거${NC}"
+echo -e "${DIM}PATH/alias는 자동으로 건드리지 않았습니다:${NC}"
+echo -e "${DIM}  - ~/.zshrc의 export PATH=\"\$HOME/.local/bin:\$PATH\"는 다른 도구도 쓰므로 직접 판단${NC}"
+echo -e "${DIM}  - c / ca / cx / cy alias는 setup-alias.sh --remove로 제거${NC}"

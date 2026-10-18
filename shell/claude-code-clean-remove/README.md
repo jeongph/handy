@@ -1,6 +1,6 @@
 # Claude Code Clean Remove
 
-Claude Code 네이티브 설치본(`curl -fsSL https://claude.ai/install.sh | bash` 로 설치한 것)을 제거하는 스크립트다.
+Claude Code 네이티브 설치본(`curl -fsSL https://claude.ai/install.sh | bash`로 설치한 것)을 제거하는 스크립트다.
 
 이 스크립트는 `install.sh`가 `claude install`로 설치한 `~/.local` 아래의 런처와 버전 저장소를 삭제한다.
 
@@ -26,8 +26,8 @@ Claude Code 네이티브 설치본(`curl -fsSL https://claude.ai/install.sh | ba
 
 | 모드 | 제거 대상 | 용도 |
 |------|-----------|------|
-| `--binary` | 런처 + 버전 저장소 | 깔끔히 재설치 (설정·로그인·플러그인 유지) |
-| `--full` | 위 + 설정·데이터·전역설정·Keychain 로그인 | 설정과 로그인 정보까지 삭제 |
+| `--binary` | 런처 + 버전 저장소 | 깔끔히 재설치 (설정, 로그인, 플러그인 유지) |
+| `--full` | 위 + 설정, 데이터, 전역 설정, Keychain 로그인 | 설정과 로그인 정보까지 삭제 |
 
 ## 삭제되는 항목
 
@@ -35,8 +35,8 @@ Claude Code 네이티브 설치본(`curl -fsSL https://claude.ai/install.sh | ba
 |------|------|:---:|:---:|
 | 런처(심볼릭 링크) | `~/.local/bin/claude` | ✓ | ✓ |
 | 버전 바이너리 저장소 | `~/.local/share/claude` | ✓ | ✓ |
-| 설정·프로젝트·플러그인·세션·기록 | `~/.claude` | | ✓ |
-| 전역 설정·로그인 상태 | `~/.claude.json`, `~/.claude.json.backup` | | ✓ |
+| 설정, 프로젝트, 플러그인, 세션, 기록 | `~/.claude` | | ✓ |
+| 전역 설정과 로그인 상태 | `~/.claude.json`, `~/.claude.json.backup` | | ✓ |
 | Keychain 로그인 인증정보 (macOS) | service `Claude Code-credentials` | | ✓ |
 
 ## 옵션
@@ -44,7 +44,7 @@ Claude Code 네이티브 설치본(`curl -fsSL https://claude.ai/install.sh | ba
 | 옵션 | 동작 |
 |------|------|
 | `--binary` | 바이너리/런처/버전 저장소만 제거 |
-| `--full` | 설정·로그인까지 완전 삭제 |
+| `--full` | 설정과 로그인까지 완전 삭제 |
 | `-y`, `--yes` | 확인 프롬프트 없이 진행 |
 | `-n`, `--dry-run` | 삭제하지 않고 대상만 출력 (용량 포함) |
 | `-h`, `--help` | 도움말 |
@@ -53,8 +53,8 @@ Claude Code 네이티브 설치본(`curl -fsSL https://claude.ai/install.sh | ba
 
 안전을 위해 다음은 스크립트가 손대지 않고 안내만 한다.
 
-- **PATH** — `~/.zshrc` 의 `export PATH="$HOME/.local/bin:$PATH"` 는 claude 전용이 아니라 `~/.local/bin` 의 다른 도구(pipx 등)도 쓰므로 직접 판단해 제거한다.
-- **alias** — `c` / `ca` / `cx` / `cy` 는 [`setup-alias.sh`](../setup-alias/setup-alias.sh) 가 관리하므로 거기서 제거한다:
+- **PATH**: `~/.zshrc`의 `export PATH="$HOME/.local/bin:$PATH"`는 claude 전용이 아니라 `~/.local/bin`의 다른 도구(pipx 등)도 쓰므로 직접 판단해 제거한다.
+- **alias**: `c`, `ca`, `cx`, `cy`는 [`setup-alias.sh`](../setup-alias/setup-alias.sh)가 관리하므로 거기서 제거한다:
   ```bash
   ./setup-alias.sh --remove
   ```

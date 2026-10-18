@@ -17,7 +17,7 @@
 
 ## tmux란?
 
-**tmux**(Terminal Multiplexer)는 하나의 터미널에서 여러 개의 터미널 세션을 생성하고 관리할 수 있게 해주는 도구입니다.
+**tmux**(Terminal Multiplexer)는 터미널 하나에서 여러 터미널 세션을 만들고 관리할 수 있게 해 주는 도구입니다.
 
 ### 주요 장점
 
@@ -81,8 +81,8 @@ tmux의 모든 단축키는 **Prefix 키**를 먼저 누른 후 사용합니다.
 > **기본 Prefix**: `Ctrl + b`
 
 예를 들어, 새 윈도우를 만들려면:
-1. `Ctrl + b` 를 누르고 손을 뗀다
-2. `c` 를 누른다
+1. `Ctrl + b`를 누르고 손을 뗀다
+2. `c`를 누른다
 
 ### 자주 사용하는 단축키 요약
 
@@ -372,7 +372,7 @@ bind C-a send-prefix
 # 마우스 지원 활성화
 set -g mouse on
 
-# 기본 쉘 설정
+# 기본 셸 설정
 set -g default-shell /bin/zsh
 
 # 히스토리 크기 증가

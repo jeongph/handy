@@ -1,6 +1,6 @@
 # Setup Aliases
 
-자주 사용하는 alias들을 쉘 RC 파일에 선택적으로 추가하는 스크립트
+자주 사용하는 alias들을 셸 RC 파일에 선택적으로 추가하는 스크립트
 
 ## 실행
 
@@ -78,14 +78,18 @@ alias c='claude'
 | Alias | 명령어 |
 |-------|--------|
 | `alias-fetch` | `source <(curl -fsSL https://handy.jeongph.dev/setup-alias)` |
+| `alias-list` | `sed -n "/^# >>>/,/^# <<</{ /^alias /p; }" "$HOME/.$(basename $SHELL)rc" 2>/dev/null` |
 
 ### Claude Code
 | Alias | 명령어 |
 |-------|--------|
 | `c` | `claude` |
 | `ca` | `claude --allow-dangerously-skip-permissions` |
-| `cx` | `claude --dangerously-skip-permissions --effort max` |
+| `cx` | `claude --dangerously-skip-permissions --model opus --effort max` |
 | `cy` | `claude --dangerously-skip-permissions` |
+| `cs` | `claude --model sonnet --effort xhigh --allow-dangerously-skip-permissions` |
+| `co` | `claude --model opus --effort xhigh --allow-dangerously-skip-permissions` |
+| `cf` | `claude --model fable --effort high --allow-dangerously-skip-permissions` |
 
 ### Tmux
 | Alias | 명령어 |
@@ -133,5 +137,5 @@ alias c='claude'
 - 기존 alias와 값 비교하여 상태 표시 (신규/동일/변경)
 - bash/zsh 모두 호환 (`/dev/tty` 사용)
 - `source <(curl ...)` 파이프 실행에서도 정상 동작
-- 비대화형 환경 자동 감지 → `--all` 모드 전환
+- 비대화형 환경을 자동 감지해 `--all` 모드로 전환
 - source 방식 실행 시 alias 자동 적용/해제

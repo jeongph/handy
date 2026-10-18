@@ -6,8 +6,8 @@
 
 `.gitignore`를 수정해도 이미 추적 중인 파일은 계속 추적된다. 이 스크립트는 인덱스(캐시)를 비워 ignore 규칙을 전체에 다시 적용한다:
 
-1. `git rm --cached -r .` — 인덱스에서 전체 제거
-2. `git add .` — ignore 규칙을 반영해 다시 추가
+1. `git rm --cached -r .`: 인덱스에서 전체 제거
+2. `git add .`: ignore 규칙을 반영해 다시 추가
 3. `git commit -m "feat: Reset gitignore"`
 
 ## 실행

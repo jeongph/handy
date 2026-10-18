@@ -1,4 +1,4 @@
-> 터미널에 실행
+> 터미널에서 실행
 
 ``` sh
 launchctl setenv MAVEN_USERNAME ""
