@@ -78,14 +78,18 @@ alias c='claude'
 | Alias | 명령어 |
 |-------|--------|
 | `alias-fetch` | `source <(curl -fsSL https://handy.jeongph.dev/setup-alias)` |
+| `alias-list` | `sed -n "/^# >>>/,/^# <<</{ /^alias /p; }" "$HOME/.$(basename $SHELL)rc" 2>/dev/null` |
 
 ### Claude Code
 | Alias | 명령어 |
 |-------|--------|
 | `c` | `claude` |
 | `ca` | `claude --allow-dangerously-skip-permissions` |
-| `cx` | `claude --dangerously-skip-permissions --effort max` |
+| `cx` | `claude --dangerously-skip-permissions --model opus --effort max` |
 | `cy` | `claude --dangerously-skip-permissions` |
+| `cs` | `claude --model sonnet --effort xhigh --allow-dangerously-skip-permissions` |
+| `co` | `claude --model opus --effort xhigh --allow-dangerously-skip-permissions` |
+| `cf` | `claude --model fable --effort high --allow-dangerously-skip-permissions` |
 
 ### Tmux
 | Alias | 명령어 |
