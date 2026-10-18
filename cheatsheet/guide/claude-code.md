@@ -2,7 +2,7 @@
 
 ## CLAUDE.md 정책 파일 탐색 범위
 
-Claude Code는 **현재 작업 디렉토리(cwd)에서 시작하여 루트 디렉토리(`/`) 바로 전까지 재귀적으로 올라가며** 모든 `CLAUDE.md` 및 `CLAUDE.local.md` 파일을 탐색한다.
+Claude Code는 **현재 작업 디렉토리(cwd)에서 시작하여 루트 디렉토리(`/`) 바로 전까지 재귀적으로 올라가며** `CLAUDE.md`와 `CLAUDE.local.md` 파일을 모두 탐색한다.
 
 즉, 상위 폴더 제한 없이 파일시스템 루트 직전까지 전부 참고한다.
 
@@ -28,11 +28,11 @@ Claude Code는 **현재 작업 디렉토리(cwd)에서 시작하여 루트 디�
 
 ### 하위 디렉토리 CLAUDE.md
 
-하위 디렉토리의 `CLAUDE.md`는 시작 시 로드되지 않고, 해당 디렉토리의 파일을 읽을 때 **온디맨드로 로드**된다.
+하위 디렉토리의 `CLAUDE.md`는 시작 시 로드되지 않고, 그 디렉토리의 파일을 읽을 때 **온디맨드로 로드**된다.
 
 ### settings.json과의 차이
 
-`settings.json`은 `CLAUDE.md`와 달리 상위 디렉토리 탐색을 **지원하지 않는다**. 현재 cwd의 `.claude/settings.json`만 참조한다.
+`settings.json`은 `CLAUDE.md`와 달리 상위 디렉토리 탐색을 **지원하지 않는다**. cwd의 `.claude/settings.json`만 참조한다.
 
 ### 전체 설정 우선순위
 
@@ -43,8 +43,8 @@ Enterprise > CLI > Local Project > Shared Project > User > Defaults
 ### `@` import 구문
 
 - `CLAUDE.md` 파일 내에서 `@path/to/file` 구문으로 다른 파일을 import할 수 있다.
-- 상대 경로는 import를 포함하는 파일 기준으로 해석된다.
-- 최대 **5단계 깊이**까지 재귀 import이 가능하다.
+- 상대 경로는 import 구문이 있는 파일을 기준으로 해석된다.
+- 최대 **5단계 깊이**까지 재귀적으로 import할 수 있다.
 
 ### CLAUDE.local.md
 

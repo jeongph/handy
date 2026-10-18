@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # setup-alias.sh
-# 자주 사용하는 alias들을 쉘 RC 파일에 선택적으로 추가하는 스크립트
+# 자주 사용하는 alias들을 셸 RC 파일에 선택적으로 추가하는 스크립트
 # 마커 블록으로 관리하여 설치/업데이트/제거를 안전하게 처리
 
 # 색상 정의
@@ -17,7 +17,7 @@ NC='\033[0m'
 MARKER_BEGIN="# >>> https://handy.jeongph.dev/setup-alias >>>"
 MARKER_END="# <<< https://handy.jeongph.dev/setup-alias <<<"
 
-# 레거시 마커 (구 URL로 설치된 블록 — 재설치/제거 시 함께 청소하여 자동 마이그레이션)
+# 레거시 마커 (구 URL로 설치된 블록을 재설치/제거 시 함께 청소하여 자동 마이그레이션)
 # 세대별로 URL/파일명이 바뀌었으므로 과거 마커를 모두 나열한다 (BEGIN/END 인덱스 대응)
 LEGACY_MARKER_BEGIN=(
     "# >>> https://jeongph.dev/handy/setup-alias >>>"
@@ -145,7 +145,7 @@ remove_block() {
     # 신 마커 블록 제거
     remove_marker_block "$rc_file" "$MARKER_BEGIN" "$MARKER_END"
     # 레거시 마커 블록도 제거 (구 URL → 신 URL 자동 마이그레이션)
-    # 인덱스 순회는 C-style로 — zsh는 bash의 ${!arr[@]}를 지원하지 않아 bad substitution이 난다
+    # 인덱스 순회는 C-style로 한다. zsh는 bash의 ${!arr[@]}를 지원하지 않아 bad substitution이 난다
     local i
     for ((i=0; i<${#LEGACY_MARKER_BEGIN[@]}; i++)); do
         remove_marker_block "$rc_file" "${LEGACY_MARKER_BEGIN[$i]}" "${LEGACY_MARKER_END[$i]}"
@@ -448,7 +448,7 @@ main() {
     else
         rc_file=$(detect_rc_file)
         if [ -z "$rc_file" ]; then
-            echo -e "${YELLOW}쉘을 자동 감지할 수 없습니다. 대화형 모드로 전환합니다.${NC}"
+            echo -e "${YELLOW}셸을 자동 감지할 수 없습니다. 대화형 모드로 전환합니다.${NC}"
             rc_file=$(select_rc_file)
         fi
     fi
